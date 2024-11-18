@@ -108,6 +108,6 @@ def predict():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
 # curl -X POST -H "Content-Type: application/json" -d '{"text":"Your input text here"}' http://localhost:5000/predict
