@@ -52,7 +52,6 @@ model.eval()
 # First, install the safetensors library if you haven't already
 # pip install safetensors
 import os, time
-os.environ["OPENAI_API_KEY"] = "5739107bcb6e414799a88e4f4ac54c22"
 os.environ["OPENAI_API_TYPE"] = "azure"
 os.environ["OPENAI_API_VERSION"] = "2024-05-01-preview"
 os.environ["OPENAI_API_BASE"] = "https://aocc-gpt-eus2.openai.azure.com/"
