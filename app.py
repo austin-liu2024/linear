@@ -1,9 +1,9 @@
-import time
+import os, time
 
 import torch
 import torch.nn as nn
 from flask import Flask, request, jsonify
-
+from openai import AzureOpenAI
 
 app = Flask(__name__)
 
@@ -51,13 +51,11 @@ model.load_state_dict(torch.load('model.pth'))
 model.eval()
 
 
-import os, time
 os.environ["OPENAI_API_TYPE"] = "azure"
 os.environ["OPENAI_API_VERSION"] = "2024-05-01-preview"
 os.environ["OPENAI_API_BASE"] = "https://aocc-gpt-eus2.openai.azure.com/"
 os.environ["OPENAI_DEPLOYMENT_NAME"] = "text-embedding-ada-002"
 
-from openai import AzureOpenAI
 
 client = AzureOpenAI(
     # https://learn.microsoft.com/azure/ai-services/openai/reference#rest-api-versioning
@@ -66,7 +64,6 @@ client = AzureOpenAI(
     azure_endpoint=os.environ["OPENAI_API_BASE"],
     azure_deployment=os.environ["OPENAI_DEPLOYMENT_NAME"],
 )
-
 
 
 def preprocess_text(text):
