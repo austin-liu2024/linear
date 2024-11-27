@@ -1,7 +1,9 @@
+import time
+
 import torch
 import torch.nn as nn
 from flask import Flask, request, jsonify
-import time
+
 
 app = Flask(__name__)
 
@@ -49,8 +51,6 @@ model.load_state_dict(torch.load('model.pth'))
 model.eval()
 
 
-# First, install the safetensors library if you haven't already
-# pip install safetensors
 import os, time
 os.environ["OPENAI_API_TYPE"] = "azure"
 os.environ["OPENAI_API_VERSION"] = "2024-05-01-preview"
@@ -70,35 +70,26 @@ client = AzureOpenAI(
 
 
 def preprocess_text(text):
-    # time.sleep(0.01)
-    print(text)
     return client.embeddings.create(input = [text], model=os.environ["OPENAI_DEPLOYMENT_NAME"]).data[0].embedding
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Get the input text from the request
     data = request.json
     input_text = data['text']
 
-    # Record the start time
     start_time = time.time()
 
-    # Preprocess the text
     input_tensor = torch.tensor([preprocess_text(input_text)])
 
-    # Make prediction
     with torch.no_grad():
         output = model(input_tensor)
 
-    # Get the predicted class and confidence
     probabilities = torch.nn.functional.softmax(output, dim=1)
     predicted_class = torch.argmax(probabilities, dim=1).item()
     confidence = probabilities[0][predicted_class].item()
 
-    # Calculate elapsed time
     elapsed_time = time.time() - start_time
 
-    # Prepare the response
     response = {
         'predicted_class': predicted_class,
         'confidence': confidence,
